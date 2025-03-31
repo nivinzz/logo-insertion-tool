@@ -907,7 +907,41 @@ document.addEventListener('DOMContentLoaded', function() {
         const extension = filename.substring(lastDotIndex);
         return nameWithoutExt + suffix + extension;
     }
-    
+    // ---------------- THÊM CODE ZIP Ở ĐÂY ----------------
+document.getElementById("downloadAllButton").addEventListener("click", function () {
+    let zip = new JSZip();
+    let folder = zip.folder("AutoLogo_Images");
+    let images = document.querySelectorAll("#resultImagesContainer img");
+
+    if (images.length === 0) {
+        alert("Không có ảnh để tải!");
+        return;
+    }
+
+    let count = 0;
+    images.forEach((img, index) => {
+        let imgURL = img.src;
+        let filename = `image_${index + 1}.png`;
+
+        fetch(imgURL)
+            .then(response => response.blob())
+            .then(blob => {
+                folder.file(filename, blob);
+                count++;
+
+                if (count === images.length) {
+                    zip.generateAsync({ type: "blob" }).then(zipFile => {
+                        saveAs(zipFile, "AutoLogo_Images.zip");
+                    });
+                }
+            });
+    });
+});
+
+// Initialize the app
+init();
+});
+
     // Initialize the app
     init();
 }); 
