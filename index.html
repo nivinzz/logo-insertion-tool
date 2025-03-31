@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Chèn Logo</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="images/logoweb.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="language-selector">
+        <div class="current-language">
+            <img src="images/flag-vi.png" alt="Tiếng Việt" class="flag-icon">
+            <span>Tiếng Việt</span>
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="language-dropdown">
+            <div class="language-option" data-lang="vi">
+                <img src="images/flag-vi.png" alt="Tiếng Việt" class="flag-icon">
+                <span>Tiếng Việt</span>
+            </div>
+            <div class="language-option" data-lang="en">
+                <img src="images/flag-en.png" alt="English" class="flag-icon">
+                <span>English</span>
+            </div>
+            <div class="language-option" data-lang="zh">
+                <img src="images/flag-zh.png" alt="中文" class="flag-icon">
+                <span>中文</span>
+            </div>
+            <div class="language-option" data-lang="fr">
+                <img src="images/flag-fr.png" alt="Français" class="flag-icon">
+                <span>Français</span>
+            </div>
+            <div class="language-option" data-lang="es">
+                <img src="images/flag-es.png" alt="Español" class="flag-icon">
+                <span>Español</span>
+            </div>
+            <div class="language-option" data-lang="ja">
+                <img src="images/flag-ja.png" alt="日本語" class="flag-icon">
+                <span>日本語</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo-title">
+                    <img src="images/logoweb.png" alt="Logo" class="header-logo">
+                    <h1>Công Cụ Chèn Logo</h1>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="upload-section">
+                <h2>Tải lên hình ảnh và logo</h2>
+                <div class="upload-container">
+                    <div class="upload-box">
+                        <div class="upload-area" id="imageUploadArea">
+                            <i class="fas fa-image"></i>
+                            <p>Kéo thả hoặc nhấp để tải lên hình ảnh</p>
+                            <input type="file" id="imageUpload" accept="image/*" multiple>
+                        </div>
+                        <div class="preview-container" id="imagePreviewContainer">
+                            <!-- Previews will be dynamically added here -->
+                        </div>
+                    </div>
+                    
+                    <div class="upload-box">
+                        <div class="upload-area" id="logoUploadArea">
+                            <i class="fas fa-image"></i>
+                            <p>Kéo thả hoặc nhấp để tải lên logo</p>
+                            <input type="file" id="logoUpload" accept="image/*">
+                        </div>
+                        <div class="preview-container">
+                            <div id="logoPreview"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h2>Cài đặt logo</h2>
+                <div class="settings-container">
+                    <div class="setting-group">
+                        <label for="position">Vị trí:</label>
+                        <select id="position" class="setting-control">
+                            <option value="top-left">Góc trên bên trái</option>
+                            <option value="top-right">Góc trên bên phải</option>
+                            <option value="top-center">Góc trên ở giữa</option>
+                            <option value="bottom-left">Góc dưới bên trái</option>
+                            <option value="bottom-right" selected>Góc dưới bên phải</option>
+                            <option value="bottom-center">Góc dưới ở giữa</option>
+                            <option value="center">Trung tâm</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-group">
+                        <label for="margin">Khoảng cách viền (pixel):</label>
+                        <input type="number" id="margin" class="setting-control" min="0" max="100" value="10">
+                    </div>
+
+                    <div class="setting-group">
+                        <div class="radio-group">
+                            <input type="radio" id="usePercentage" name="sizeType" checked>
+                            <label for="usePercentage">Tỷ lệ theo % ảnh gốc</label>
+                            
+                            <input type="radio" id="useFixedSize" name="sizeType">
+                            <label for="useFixedSize">Kích thước cố định (pixel)</label>
+                        </div>
+                    </div>
+
+                    <div class="setting-group" id="percentageGroup">
+                        <label for="sizePercent">Kích thước logo (%):</label>
+                        <input type="number" id="sizePercent" class="setting-control" min="1" max="50" value="15">
+                    </div>
+
+                    <div class="setting-group" id="fixedSizeGroup" style="display: none;">
+                        <label for="fixedWidth">Chiều rộng (pixel):</label>
+                        <input type="number" id="fixedWidth" class="setting-control" min="1" max="1000" value="100">
+                        
+                        <label for="fixedHeight">Chiều cao (pixel):</label>
+                        <input type="number" id="fixedHeight" class="setting-control" min="1" max="1000" value="100">
+                    </div>
+
+                    <div class="setting-group">
+                        <label for="opacity">Độ trong suốt (%):</label>
+                        <input type="number" id="opacity" class="setting-control" min="1" max="100" value="100">
+                    </div>
+                </div>
+            </section>
+
+            <section class="preview-section">
+                <h2>Xem trước</h2>
+                <div class="preview-box">
+                    <div id="previewImage"></div>
+                </div>
+                <button id="previewButton" class="btn primary-btn">Xem trước</button>
+            </section>
+
+            <section class="process-section">
+                <button id="processButton" class="btn primary-btn">Xử lý tất cả hình ảnh</button>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progressBar"></div>
+                    </div>
+                    <div id="progressStatus">Sẵn sàng</div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>© 2024 - Bản quyền thuộc về nivinz (crt.nivinz@gmail.com)</p>
+        </footer>
+    </div>
+
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Tải xuống hình ảnh</h2>
+            <div class="result-images" id="resultImagesContainer">
+                <!-- Result images will be added here -->
+            </div>
+            <button id="downloadAllButton" class="btn primary-btn">Tải xuống tất cả</button>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html> 
