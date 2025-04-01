@@ -74,7 +74,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'error': 'Lỗi xử lý!',
             'alert_upload_logo': 'Vui lòng tải lên logo trước!',
             'alert_upload_image': 'Vui lòng tải lên ít nhất một hình ảnh!',
-            'alert_image_only': 'Chỉ hỗ trợ file hình ảnh!'
+            'alert_image_only': 'Chỉ hỗ trợ file hình ảnh!',
+            'creating_zip': 'Đang tạo ZIP...'
         },
         'en': {
             'title': 'Logo Insertion Tool',
@@ -110,7 +111,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'error': 'Error processing!',
             'alert_upload_logo': 'Please upload a logo first!',
             'alert_upload_image': 'Please upload at least one image!',
-            'alert_image_only': 'Only image files are supported!'
+            'alert_image_only': 'Only image files are supported!',
+            'creating_zip': 'Creating ZIP...'
         },
         'zh': {
             'title': '标志插入工具',
@@ -146,7 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'error': '处理错误！',
             'alert_upload_logo': '请先上传标志！',
             'alert_upload_image': '请至少上传一张图像！',
-            'alert_image_only': '仅支持图像文件！'
+            'alert_image_only': '仅支持图像文件！',
+            'creating_zip': '正在创建ZIP...'
         },
         'fr': {
             'title': 'Outil d\'insertion de logo',
@@ -182,7 +185,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'error': 'Erreur de traitement!',
             'alert_upload_logo': 'Veuillez d\'abord télécharger un logo!',
             'alert_upload_image': 'Veuillez télécharger au moins une image!',
-            'alert_image_only': 'Seuls les fichiers image sont pris en charge!'
+            'alert_image_only': 'Seuls les fichiers image sont pris en charge!',
+            'creating_zip': 'Création du ZIP...'
         },
         'es': {
             'title': 'Herramienta de inserción de logotipo',
@@ -218,7 +222,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'error': '¡Error de procesamiento!',
             'alert_upload_logo': '¡Por favor, suba un logotipo primero!',
             'alert_upload_image': '¡Por favor, suba al menos una imagen!',
-            'alert_image_only': '¡Solo se admiten archivos de imagen!'
+            'alert_image_only': '¡Solo se admiten archivos de imagen!',
+            'creating_zip': 'Creando ZIP...'
         },
         'ja': {
             'title': 'ロゴ挿入ツール',
@@ -254,7 +259,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'error': '処理エラー！',
             'alert_upload_logo': '最初にロゴをアップロードしてください！',
             'alert_upload_image': '少なくとも1つの画像をアップロードしてください！',
-            'alert_image_only': '画像ファイルのみサポートされています！'
+            'alert_image_only': '画像ファイルのみサポートされています！',
+            'creating_zip': 'ZIPを作成中...'
         }
     };
     
@@ -880,18 +886,51 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Download all processed images
     function downloadAllImages() {
-        processedImages.forEach(image => {
-            // Create a download link
-            const link = document.createElement('a');
-            link.href = image.dataUrl;
-            
-            // Prepare a better filename with "_logo" suffix
+        if (processedImages.length === 0) {
+            return;
+        }
+        
+        // Show loading message
+        const originalButtonText = downloadAllButton.textContent;
+        downloadAllButton.textContent = translations[currentLang].creating_zip || 'Đang tạo ZIP...';
+        downloadAllButton.disabled = true;
+        
+        // Create a new ZIP file
+        const zip = new JSZip();
+        const imgFolder = zip.folder("processed_images");
+        let count = 0;
+        
+        // Add each image to the ZIP file
+        processedImages.forEach((image, index) => {
+            // Get image data without the data URL prefix
+            const imageData = image.dataUrl.split(',')[1];
+            // Prepare filename with "_logo" suffix
             const fileName = getFileNameWithSuffix(image.name, '_logo');
             
-            link.download = fileName;
-            document.body.appendChild(link); // Needed for Firefox
-            link.click();
-            document.body.removeChild(link); // Clean up
+            // Add the image to the ZIP file
+            imgFolder.file(fileName, imageData, {base64: true});
+            
+            count++;
+            // When all images are added to the ZIP file
+            if (count === processedImages.length) {
+                // Generate the ZIP file
+                zip.generateAsync({type:"blob"})
+                .then(function(content) {
+                    // Get current date for filename
+                    const now = new Date();
+                    const dateStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}_${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}`;
+                    
+                    // Create filename for the ZIP
+                    const zipFileName = `processed_images_${dateStr}.zip`;
+                    
+                    // Download the ZIP file
+                    saveAs(content, zipFileName);
+                    
+                    // Reset button
+                    downloadAllButton.textContent = originalButtonText;
+                    downloadAllButton.disabled = false;
+                });
+            }
         });
     }
     
@@ -907,36 +946,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const extension = filename.substring(lastDotIndex);
         return nameWithoutExt + suffix + extension;
     }
-    document.getElementById("downloadAllButton").addEventListener("click", function () {
-    let zip = new JSZip(); // Khởi tạo ZIP mới
-    let folder = zip.folder("AutoLogo_Images"); // Tạo thư mục trong ZIP
-    let images = document.querySelectorAll("#resultImagesContainer img"); // Lấy danh sách ảnh đã xử lý
-
-    if (images.length === 0) {
-        alert("Không có ảnh để tải!");
-        return;
-    }
-
-    let count = 0;
-    images.forEach((img, index) => {
-        let imgURL = img.src;
-        let filename = `image_${index + 1}.png`;
-
-        fetch(imgURL)
-            .then(response => response.blob()) // Chuyển ảnh sang blob
-            .then(blob => {
-                folder.file(filename, blob); // Thêm ảnh vào ZIP
-                count++;
-
-                if (count === images.length) {
-                    zip.generateAsync({ type: "blob" }).then(zipFile => {
-                        saveAs(zipFile, "AutoLogo_Images.zip"); // Lưu ZIP về máy
-                    });
-                }
-            });
-    });
-});
-
+    
     // Initialize the app
     init();
 }); 
