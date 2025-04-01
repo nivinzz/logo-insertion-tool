@@ -13,7 +13,8 @@
 - Điều chỉnh độ trong suốt của logo
 - Xem trước ảnh có logo trước khi xử lý
 - Hỗ trợ kéo thả file (drag & drop)
-- Tải xuống ảnh đã xử lý
+- Tải xuống từng ảnh riêng lẻ hoặc tất cả ảnh trong một file ZIP
+- Hỗ trợ nhiều ngôn ngữ: Tiếng Việt, Tiếng Anh, Tiếng Trung, Tiếng Pháp, Tiếng Tây Ban Nha, Tiếng Nhật
 
 ## Cách Sử Dụng
 
@@ -22,7 +23,7 @@
 3. Điều chỉnh các cài đặt theo mong muốn
 4. Nhấn "Xem trước" để kiểm tra kết quả
 5. Nhấn "Xử lý tất cả hình ảnh" để xử lý tất cả hình ảnh
-6. Tải xuống từng ảnh riêng lẻ hoặc tất cả cùng lúc
+6. Tải xuống từng ảnh riêng lẻ hoặc tất cả cùng lúc trong một file ZIP
 
 ## Ưu Điểm
 
@@ -30,6 +31,7 @@
 - Giao diện trực quan, dễ sử dụng
 - Tự động điều chỉnh theo kích thước màn hình (responsive)
 - Không cần cài đặt phần mềm
+- Tạo file ZIP khi tải xuống nhiều ảnh, giúp tiết kiệm thời gian
 
 ## Yêu Cầu Kỹ Thuật
 
@@ -50,7 +52,9 @@
 - CSS3
 - JavaScript (ES6+)
 - Canvas API để xử lý hình ảnh
+- JSZip để đóng gói file ZIP
+- FileSaver.js để tải file
 
 ## Bản Quyền
 
-© 2025- Bản quyền thuộc về nivinz(crt.nivinz@gmail.com)
+© 2024 - Bản quyền thuộc về nivinz (crt.nivinz@gmail.com)
