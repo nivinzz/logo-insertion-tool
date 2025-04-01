@@ -907,7 +907,36 @@ document.addEventListener('DOMContentLoaded', function() {
         const extension = filename.substring(lastDotIndex);
         return nameWithoutExt + suffix + extension;
     }
-    
+    document.getElementById("downloadAllButton").addEventListener("click", function () {
+    let zip = new JSZip(); // Khởi tạo ZIP mới
+    let folder = zip.folder("AutoLogo_Images"); // Tạo thư mục trong ZIP
+    let images = document.querySelectorAll("#resultImagesContainer img"); // Lấy danh sách ảnh đã xử lý
+
+    if (images.length === 0) {
+        alert("Không có ảnh để tải!");
+        return;
+    }
+
+    let count = 0;
+    images.forEach((img, index) => {
+        let imgURL = img.src;
+        let filename = `image_${index + 1}.png`;
+
+        fetch(imgURL)
+            .then(response => response.blob()) // Chuyển ảnh sang blob
+            .then(blob => {
+                folder.file(filename, blob); // Thêm ảnh vào ZIP
+                count++;
+
+                if (count === images.length) {
+                    zip.generateAsync({ type: "blob" }).then(zipFile => {
+                        saveAs(zipFile, "AutoLogo_Images.zip"); // Lưu ZIP về máy
+                    });
+                }
+            });
+    });
+});
+
     // Initialize the app
     init();
 }); 
